@@ -4,7 +4,9 @@
 #define HEIGHT 640
 #define TILE_SIZE 64
 #define MOVE_SPEED 5 // Velocidad del círculo en píxeles
+#define CIRCLE_RADIUS 24 // Radio del círculo (48x48)
 
+// Estructura del juego
 typedef struct {
     mlx_t* mlx;
     mlx_image_t* img;
@@ -14,17 +16,23 @@ typedef struct {
     int map[10][10];
 } game_t;
 
+// Función para dibujar un cuadrado en la imagen
 void draw_square(mlx_image_t* img, int x, int y, int size, uint32_t color)
 {
-    for (int i = 0; i < size; i++)
+    int i = 0;
+    while (i < size)
     {
-        for (int j = 0; j < size; j++)
+        int j = 0;
+        while (j < size)
         {
             mlx_put_pixel(img, x + i, y + j, color);
+            j++;
         }
+        i++;
     }
 }
 
+// Función para dibujar el mapa
 void draw_map(mlx_image_t* img, int map[][10], int rows, int cols)
 {
     for (int i = 0; i < rows; i++)
@@ -39,25 +47,24 @@ void draw_map(mlx_image_t* img, int map[][10], int rows, int cols)
     }
 }
 
+// Función para verificar las colisiones del círculo
 int is_valid_move(game_t* game, float new_x, float new_y)
 {
-    // Calcular las esquinas del círculo
-    int left = (int)(new_x / TILE_SIZE);
-    int right = (int)((new_x + TILE_SIZE - 1) / TILE_SIZE);
-    int top = (int)(new_y / TILE_SIZE);
-    int bottom = (int)((new_y + TILE_SIZE - 1) / TILE_SIZE);
+    int map_x, map_y;
 
-    // Verificar colisiones con el mapa
-    if (left < 0 || right >= 10 || top < 0 || bottom >= 10)
-        return 0;
+    // Verificar si el círculo va a colisionar con una pared
+    // Comprobamos solo las posiciones en las que el centro del círculo va a estar
+    map_x = (int)(new_x / TILE_SIZE);
+    map_y = (int)(new_y / TILE_SIZE);
 
-    if (game->map[top][left] == 1 || game->map[top][right] == 1 ||
-        game->map[bottom][left] == 1 || game->map[bottom][right] == 1)
-        return 0;
+    // Si la nueva posición está fuera de los límites o en una pared, es una colisión
+    if (map_x < 0 || map_y < 0 || map_x >= 10 || map_y >= 10 || game->map[map_y][map_x] == 1)
+        return 0; // Movimiento no válido
 
-    return 1;
+    return 1; // Movimiento válido
 }
 
+// Función para manejar las teclas presionadas
 void key_hook(mlx_key_data_t keydata, void* param)
 {
     game_t* game = (game_t*)param;
@@ -67,6 +74,7 @@ void key_hook(mlx_key_data_t keydata, void* param)
         float new_x = game->x;
         float new_y = game->y;
 
+        // Movimiento basado en las teclas
         if (keydata.key == MLX_KEY_W)
             new_y -= MOVE_SPEED;
         else if (keydata.key == MLX_KEY_S)
@@ -84,34 +92,36 @@ void key_hook(mlx_key_data_t keydata, void* param)
         // Verificar si el movimiento es válido antes de actualizar las coordenadas
         if (is_valid_move(game, new_x, new_y))
         {
-            // Borrar el círculo anterior redibujando el mapa
-            draw_map(game->img, game->map, 10, 10);
-            mlx_image_to_window(game->mlx, game->img, 0, 0);
-
             game->x = new_x;
             game->y = new_y;
-
-            // Redibujar el círculo en la nueva posición
-            mlx_image_to_window(game->mlx, game->circle_img, (int)game->x, (int)game->y);
         }
+
+        // Redibujar el mapa
+        mlx_image_to_window(game->mlx, game->img, 0, 0);
+        draw_map(game->img, game->map, 10, 10);
+
+        // Redibujar la textura del círculo
+        mlx_image_to_window(game->mlx, game->circle_img, (int)game->x, (int)game->y);
     }
 }
 
 int main(void)
 {
-int map[10][10] = {
-    {1, 1, 1, 1, 1, 1, 1, 1, 1, 1},
-    {1, 0, 0, 1, 0, 0, 1, 0, 0, 1},
-    {1, 0, 1, 1, 0, 1, 1, 0, 1, 1},
-    {1, 0, 1, 0, 0, 1, 0, 0, 0, 1},
-    {1, 0, 0, 0, 0, 1, 1, 1, 0, 1},
-    {1, 0, 0, 0, 1, 0, 0, 1, 0, 1},
-    {1, 0, 1, 0, 0, 1, 1, 0, 0, 1},
-    {1, 0, 1, 1, 1, 1, 1, 1, 0, 1},
-    {1, 0, 0, 0, 1, 0, 1, 0, 0, 1},
-    {1, 1, 1, 1, 1, 1, 1, 1, 1, 1}
-};
+    // Mapa con pasillos más anchos y estrechos
+    int map[10][10] = {
+        {1, 1, 1, 1, 1, 1, 1, 1, 1, 1},
+        {1, 0, 1, 1, 1, 1, 1, 1, 0, 1},
+        {1, 0, 0, 0, 0, 0, 1, 1, 0, 1},
+        {1, 0, 1, 0, 1, 1, 0, 1, 0, 1},
+        {1, 0, 1, 1, 0, 1, 0, 1, 0, 1},
+        {1, 0, 0, 0, 1, 0, 0, 1, 0, 1},
+        {1, 1, 1, 0, 1, 1, 1, 1, 0, 1},
+        {1, 0, 0, 0, 1, 0, 0, 0, 0, 1},
+        {1, 1, 1, 1, 0, 1, 1, 1, 0, 1},
+        {1, 1, 1, 1, 1, 1, 1, 1, 1, 1}
+    };
 
+    // Inicialización de MLX
     mlx_t* mlx = mlx_init(WIDTH, HEIGHT, "Map Example", true);
     if (!mlx)
         return EXIT_FAILURE;
@@ -127,6 +137,7 @@ int map[10][10] = {
 
     mlx_image_to_window(mlx, img, 0, 0);
 
+    // Cargar y crear la imagen del círculo
     mlx_texture_t* texture = mlx_load_png("textures/circulo.png");
     if (!texture)
     {
@@ -144,23 +155,14 @@ int map[10][10] = {
         return EXIT_FAILURE;
     }
 
-    mlx_resize_image(circle_img, TILE_SIZE, TILE_SIZE);
+    // Redimensionar el círculo para que sea más pequeño (48x48)
+    mlx_resize_image(circle_img, 48, 48);
 
-    // Inicializar el círculo en la posición (1, 1), asegurándonos de que sea una celda válida
-    game_t game = {mlx, img, circle_img, TILE_SIZE, TILE_SIZE, {0}};
+    // Inicializar el círculo en la posición (1, 1)
+    game_t game = {mlx, img, circle_img, 1 * TILE_SIZE, 1 * TILE_SIZE, {0}};
     memcpy(game.map, map, sizeof(map));
 
-    if (!is_valid_move(&game, game.x, game.y))
-    {
-        fprintf(stderr, "Error: posición inicial no válida\n");
-        mlx_delete_image(mlx, img);
-        mlx_delete_image(mlx, circle_img);
-        mlx_delete_texture(texture);
-        mlx_terminate(mlx);
-        return EXIT_FAILURE;
-    }
-
-    mlx_image_to_window(mlx, circle_img, (int)game.x, (int)game.y);
+    mlx_image_to_window(mlx, circle_img, (int)game.x, (int)game->y);
 
     mlx_key_hook(mlx, key_hook, &game);
 
