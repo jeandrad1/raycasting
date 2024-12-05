@@ -1,8 +1,8 @@
 #include "raycasting.h"
 
-#define WIDTH 800
-#define HEIGHT 600
-#define TILE_SIZE 50
+#define WIDTH 640
+#define HEIGHT 640
+#define TILE_SIZE 64
 
 typedef struct {
     mlx_t* mlx;
@@ -19,7 +19,6 @@ void draw_square(mlx_image_t* img, int x, int y, int size, uint32_t color)
     int j;
     
     i = 0;
-    j = 0;
     while (i < size)
     {
         j = 0;
@@ -66,7 +65,11 @@ void key_hook(mlx_key_data_t keydata, void* param)
             new_x -= TILE_SIZE;
         else if (keydata.key == MLX_KEY_D)
             new_x += TILE_SIZE;
-
+        else if (keydata.key == MLX_KEY_ESCAPE)
+        {
+            mlx_terminate(game->mlx);
+            exit(0);
+        }
         int map_x = new_x / TILE_SIZE;
         int map_y = new_y / TILE_SIZE;
 
@@ -134,9 +137,9 @@ int main(void)
 
     mlx_resize_image(circle_img, TILE_SIZE, TILE_SIZE);
 
-    game_t game = {mlx, img, circle_img, WIDTH / 2, HEIGHT / 2,{0}};
+    // Colocar el círculo en una posición inicial válida (fila 1, columna 1)
+    game_t game = {mlx, img, circle_img, 1 * TILE_SIZE, 1 * TILE_SIZE, {0}};
     memcpy(game.map, map, sizeof(map));
-
 
     mlx_image_to_window(mlx, circle_img, game.x, game.y);
 
