@@ -113,6 +113,68 @@ void key_hook(mlx_key_data_t keydata, void* param)
     }
 }
 
+void mlx_draw_line(mlx_image_t* img, float x1, float y1, float x2, float y2, uint32_t color)
+{
+    float dx = x2 - x1;
+    float dy = y2 - y1;
+
+    if (fabs(dx) > fabs(dy))
+    {
+        if (x1 > x2)
+        {
+            float temp = x1;
+            x1 = x2;
+            x2 = temp;
+
+            temp = y1;
+            y1 = y2;
+            y2 = temp;
+        }
+
+        float m = dy / dx;
+        float b = y1 - m * x1;
+
+        for (int x = x1; x <= x2; x++)
+        {
+            int y = m * x + b;
+            mlx_put_pixel(img, x, y, color);
+        }
+    }
+    else
+    {
+        if (y1 > y2)
+        {
+            float temp = x1;
+            x1 = x2;
+            x2 = temp;
+
+            temp = y1;
+            y1 = y2;
+            y2 = temp;
+        }
+
+        float m = dx / dy;
+        float b = x1 - m * y1;
+
+        for (int y = y1; y <= y2; y++)
+        {
+            int x = m * y + b;
+            mlx_put_pixel(img, x, y, color);
+        }
+    }
+}
+
+void raycone(mlx_image_t* img, int x, int y, int angle, int distance, uint32_t color)
+{
+    float x1 = x;
+    float y1 = y;
+    float x2 = x + cos(angle * M_PI / 180) * distance;
+    float y2 = y + sin(angle * M_PI / 180) * distance;
+
+    mlx_draw_line(img, x1, y1, x2, y2, color);
+}
+
+
 int main(void)
 {
     // Mapa con pasillos más anchos y estrechos
