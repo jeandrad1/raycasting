@@ -3,20 +3,21 @@
 #define WIDTH 640
 #define HEIGHT 640
 #define TILE_SIZE 64
-#define MOVE_SPEED 5 // Velocidad del círculo en píxeles
-#define CIRCLE_SIZE 48 // Tamaño del círculo (48x48)
+#define MOVE_SPEED 5      // Velocidad del círculo en píxeles
+#define ROTATE_SPEED 5    // Velocidad de rotación en grados
+#define CIRCLE_SIZE 48    // Tamaño del círculo (48x48)
+#define DEG_TO_RAD(angle) ((angle) * M_PI / 180.0)
 
-// Estructura del juego
 typedef struct {
     mlx_t* mlx;
     mlx_image_t* img;
     mlx_image_t* circle_img;
     float x;
     float y;
+    float angle; // Ángulo de orientación en grados
     int map[10][10];
 } game_t;
 
-// Función para dibujar un cuadrado en la imagen
 void draw_square(mlx_image_t* img, int x, int y, int size, uint32_t color)
 {
     for (int i = 0; i < size; i++)
@@ -72,112 +73,42 @@ int is_valid_move(game_t* game, float new_x, float new_y)
     return 1; // Movimiento válido
 }
 
-// Función para manejar las teclas presionadas
-void key_hook(mlx_key_data_t keydata, void* param)
-{
+// Implementación de funciones...
+
+void key_hook(mlx_key_data_t keydata, void* param) {
     game_t* game = (game_t*)param;
 
-    if (keydata.action == MLX_PRESS || keydata.action == MLX_REPEAT)
-    {
+    if (keydata.action == MLX_PRESS || keydata.action == MLX_REPEAT) {
         float new_x = game->x;
         float new_y = game->y;
 
-        // Movimiento basado en las teclas
-        if (keydata.key == MLX_KEY_W)
-            new_y -= MOVE_SPEED;
-        else if (keydata.key == MLX_KEY_S)
-            new_y += MOVE_SPEED;
-        else if (keydata.key == MLX_KEY_A)
-            new_x -= MOVE_SPEED;
-        else if (keydata.key == MLX_KEY_D)
-            new_x += MOVE_SPEED;
-        else if (keydata.key == MLX_KEY_ESCAPE)
-        {
+        if (keydata.key == MLX_KEY_W) {
+            new_x += cos(DEG_TO_RAD(game->angle)) * MOVE_SPEED;
+            new_y += sin(DEG_TO_RAD(game->angle)) * MOVE_SPEED;
+        } else if (keydata.key == MLX_KEY_S) {
+            new_x -= cos(DEG_TO_RAD(game->angle)) * MOVE_SPEED;
+            new_y -= sin(DEG_TO_RAD(game->angle)) * MOVE_SPEED;
+        } else if (keydata.key == MLX_KEY_A) {
+            game->angle -= ROTATE_SPEED;
+            if (game->angle < 0) game->angle += 360;
+        } else if (keydata.key == MLX_KEY_D) {
+            game->angle += ROTATE_SPEED;
+            if (game->angle >= 360) game->angle -= 360;
+        } else if (keydata.key == MLX_KEY_ESCAPE) {
             mlx_terminate(game->mlx);
             exit(0);
         }
 
-        // Verificar si el movimiento es válido antes de actualizar las coordenadas
-        if (is_valid_move(game, new_x, new_y))
-        {
+        if (is_valid_move(game, new_x, new_y)) {
             game->x = new_x;
             game->y = new_y;
-        }
-
-        // Redibujar el mapa
-        mlx_image_to_window(game->mlx, game->img, 0, 0);
-        draw_map(game->img, game->map, 10, 10);
-
-        // Redibujar la textura del círculo
-        mlx_image_to_window(game->mlx, game->circle_img, (int)game->x, (int)game->y);
-    }
-}
-
-void mlx_draw_line(mlx_image_t* img, float x1, float y1, float x2, float y2, uint32_t color)
-{
-    float dx = x2 - x1;
-    float dy = y2 - y1;
-
-    if (fabs(dx) > fabs(dy))
-    {
-        if (x1 > x2)
-        {
-            float temp = x1;
-            x1 = x2;
-            x2 = temp;
-
-            temp = y1;
-            y1 = y2;
-            y2 = temp;
-        }
-
-        float m = dy / dx;
-        float b = y1 - m * x1;
-
-        for (int x = x1; x <= x2; x++)
-        {
-            int y = m * x + b;
-            mlx_put_pixel(img, x, y, color);
-        }
-    }
-    else
-    {
-        if (y1 > y2)
-        {
-            float temp = x1;
-            x1 = x2;
-            x2 = temp;
-
-            temp = y1;
-            y1 = y2;
-            y2 = temp;
-        }
-
-        float m = dx / dy;
-        float b = x1 - m * y1;
-
-        for (int y = y1; y <= y2; y++)
-        {
-            int x = m * y + b;
-            mlx_put_pixel(img, x, y, color);
+            game->circle_img->instances[0].x = game->x;
+            game->circle_img->instances[0].y = game->y;
         }
     }
 }
 
-void raycone(mlx_image_t* img, int x, int y, int angle, int distance, uint32_t color)
-{
-    float x1 = x;
-    float y1 = y;
-    float x2 = x + cos(angle * M_PI / 180) * distance;
-    float y2 = y + sin(angle * M_PI / 180) * distance;
-
-    mlx_draw_line(img, x1, y1, x2, y2, color);
-}
-
-
-int main(void)
-{
-    // Mapa con pasillos más anchos y estrechos
+int main(void) {
     int map[10][10] = {
         {1, 1, 1, 1, 1, 1, 1, 1, 1, 1},
         {1, 0, 1, 1, 1, 1, 1, 1, 0, 1},
@@ -191,14 +122,12 @@ int main(void)
         {1, 1, 1, 1, 1, 1, 1, 1, 1, 1}
     };
 
-    // Inicialización de MLX
     mlx_t* mlx = mlx_init(WIDTH, HEIGHT, "Map Example", true);
     if (!mlx)
         return EXIT_FAILURE;
 
     mlx_image_t* img = mlx_new_image(mlx, WIDTH, HEIGHT);
-    if (!img)
-    {
+    if (!img) {
         mlx_terminate(mlx);
         return EXIT_FAILURE;
     }
@@ -206,34 +135,35 @@ int main(void)
     draw_map(img, map, 10, 10);
     mlx_image_to_window(mlx, img, 0, 0);
 
-    // Cargar y crear la imagen del círculo
     mlx_texture_t* texture = mlx_load_png("textures/circulo.png");
-    if (!texture)
-    {
+    if (!texture) {
         mlx_delete_image(mlx, img);
         mlx_terminate(mlx);
         return EXIT_FAILURE;
     }
 
-    // Crear y redimensionar la imagen del círculo
     mlx_image_t* circle_img = mlx_texture_to_image(mlx, texture);
-    if (!circle_img)
-    {
+    if (!circle_img) {
         mlx_delete_image(mlx, img);
         mlx_delete_texture(texture);
         mlx_terminate(mlx);
         return EXIT_FAILURE;
     }
+
     mlx_resize_image(circle_img, CIRCLE_SIZE, CIRCLE_SIZE);
 
-    // Inicializar el círculo en la posición (1, 1)
-    game_t game = {mlx, img, circle_img, 1 * TILE_SIZE, 1 * TILE_SIZE, {0}};
+    game_t game = {0};
+    game.mlx = mlx;
+    game.img = img;
+    game.circle_img = circle_img;
+    game.x = TILE_SIZE;
+    game.y = TILE_SIZE;
+    game.angle = 0;
+
     memcpy(game.map, map, sizeof(map));
 
-    mlx_image_to_window(mlx, circle_img, (int)game.x, (int)game.y);
-
+    mlx_image_to_window(mlx, circle_img, game.x, game.y);
     mlx_key_hook(mlx, key_hook, &game);
-
     mlx_loop(mlx);
 
     mlx_delete_image(mlx, img);
