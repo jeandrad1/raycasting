@@ -18,24 +18,19 @@ typedef struct {
     int map[10][10];
 } game_t;
 
-void draw_square(mlx_image_t* img, int x, int y, int size, uint32_t color)
-{
-    for (int i = 0; i < size; i++)
-    {
-        for (int j = 0; j < size; j++)
-        {
+// Función para dibujar un cuadrado en la imagen
+void draw_square(mlx_image_t* img, int x, int y, int size, uint32_t color) {
+    for (int i = 0; i < size; i++) {
+        for (int j = 0; j < size; j++) {
             mlx_put_pixel(img, x + i, y + j, color);
         }
     }
 }
 
 // Función para dibujar el mapa
-void draw_map(mlx_image_t* img, int map[][10], int rows, int cols)
-{
-    for (int i = 0; i < rows; i++)
-    {
-        for (int j = 0; j < cols; j++)
-        {
+void draw_map(mlx_image_t* img, int map[][10], int rows, int cols) {
+    for (int i = 0; i < rows; i++) {
+        for (int j = 0; j < cols; j++) {
             if (map[i][j] == 1)
                 draw_square(img, j * TILE_SIZE, i * TILE_SIZE, TILE_SIZE, 0x0000FFFF); // Azul
             else
@@ -45,66 +40,62 @@ void draw_map(mlx_image_t* img, int map[][10], int rows, int cols)
 }
 
 // Función para verificar las colisiones del círculo con el mapa
-int is_valid_move(game_t* game, float new_x, float new_y)
-{
-    // Coordenadas del área del círculo en la ventana
-    int start_x = (int)new_x;
-    int start_y = (int)new_y;
-
-    // Recorrer los píxeles del círculo como un rectángulo
-    for (int i = 0; i < CIRCLE_SIZE; i++)
-    {
-        for (int j = 0; j < CIRCLE_SIZE; j++)
-        {
-            // Calcular la posición global del píxel en el mapa
-            int global_x = start_x + j;
-            int global_y = start_y + i;
-
-            // Calcular las coordenadas del mapa correspondientes
-            int map_x = global_x / TILE_SIZE;
-            int map_y = global_y / TILE_SIZE;
-
-            // Verificar colisión con los límites o una pared
-            if (map_x < 0 || map_y < 0 || map_x >= 10 || map_y >= 10 || game->map[map_y][map_x] == 1)
-                return 0; // Movimiento no válido
-        }
+int is_valid_move(game_t* game, float new_x, float new_y) {
+    // Asegúrate de que el círculo no salga del mapa
+    if (new_x < 0 || new_y < 0 ||
+        new_x + CIRCLE_SIZE > WIDTH ||
+        new_y + CIRCLE_SIZE > HEIGHT) {
+        return 0; // Movimiento no válido
     }
+
+    int map_x = (int)(new_x + CIRCLE_SIZE / 2) / TILE_SIZE;
+    int map_y = (int)(new_y + CIRCLE_SIZE / 2) / TILE_SIZE;
+
+    if (game->map[map_y][map_x] == 1)
+        return 0; // Colisión con una pared
 
     return 1; // Movimiento válido
 }
 
-// Implementación de funciones...
-
-void key_hook(mlx_key_data_t keydata, void* param) {
+// Función principal del bucle del juego
+void game_loop(void* param) {
     game_t* game = (game_t*)param;
 
-    if (keydata.action == MLX_PRESS || keydata.action == MLX_REPEAT) {
-        float new_x = game->x;
-        float new_y = game->y;
+    float new_x = game->x;
+    float new_y = game->y;
 
-        if (keydata.key == MLX_KEY_W) {
-            new_x += cos(DEG_TO_RAD(game->angle)) * MOVE_SPEED;
-            new_y += sin(DEG_TO_RAD(game->angle)) * MOVE_SPEED;
-        } else if (keydata.key == MLX_KEY_S) {
-            new_x -= cos(DEG_TO_RAD(game->angle)) * MOVE_SPEED;
-            new_y -= sin(DEG_TO_RAD(game->angle)) * MOVE_SPEED;
-        } else if (keydata.key == MLX_KEY_A) {
-            game->angle -= ROTATE_SPEED;
-            if (game->angle < 0) game->angle += 360;
-        } else if (keydata.key == MLX_KEY_D) {
-            game->angle += ROTATE_SPEED;
-            if (game->angle >= 360) game->angle -= 360;
-        } else if (keydata.key == MLX_KEY_ESCAPE) {
-            mlx_terminate(game->mlx);
-            exit(0);
-        }
+    // Movimiento hacia adelante y hacia atrás
+    if (mlx_is_key_down(game->mlx, MLX_KEY_W)) {
+        new_x += cos(DEG_TO_RAD(game->angle)) * MOVE_SPEED;
+        new_y += sin(DEG_TO_RAD(game->angle)) * MOVE_SPEED;
+    }
+    if (mlx_is_key_down(game->mlx, MLX_KEY_S)) {
+        new_x -= cos(DEG_TO_RAD(game->angle)) * MOVE_SPEED;
+        new_y -= sin(DEG_TO_RAD(game->angle)) * MOVE_SPEED;
+    }
 
-        if (is_valid_move(game, new_x, new_y)) {
-            game->x = new_x;
-            game->y = new_y;
-            game->circle_img->instances[0].x = game->x;
-            game->circle_img->instances[0].y = game->y;
-        }
+    // Rotación izquierda y derecha
+    if (mlx_is_key_down(game->mlx, MLX_KEY_A)) {
+        game->angle -= ROTATE_SPEED;
+        if (game->angle < 0) game->angle += 360;
+    }
+    if (mlx_is_key_down(game->mlx, MLX_KEY_D)) {
+        game->angle += ROTATE_SPEED;
+        if (game->angle >= 360) game->angle -= 360;
+    }
+
+    // Validar y aplicar el movimiento
+    if (is_valid_move(game, new_x, new_y)) {
+        game->x = new_x;
+        game->y = new_y;
+        game->circle_img->instances[0].x = game->x;
+        game->circle_img->instances[0].y = game->y;
+    }
+
+    // Salida del juego
+    if (mlx_is_key_down(game->mlx, MLX_KEY_ESCAPE)) {
+        mlx_terminate(game->mlx);
+        exit(0);
     }
 }
 
@@ -163,7 +154,7 @@ int main(void) {
     memcpy(game.map, map, sizeof(map));
 
     mlx_image_to_window(mlx, circle_img, game.x, game.y);
-    mlx_key_hook(mlx, key_hook, &game);
+    mlx_loop_hook(mlx, game_loop, &game); // Configuración del loop principal
     mlx_loop(mlx);
 
     mlx_delete_image(mlx, img);
