@@ -6,7 +6,7 @@
 /*   By: jeandrad <jeandrad@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/09 12:26:30 by jeandrad          #+#    #+#             */
-/*   Updated: 2024/12/09 12:39:11 by jeandrad         ###   ########.fr       */
+/*   Updated: 2024/12/09 12:42:06 by jeandrad         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -91,9 +91,7 @@ void update_and_render(void *param)
         uint32_t color;
         switch (game->worldMap[mapX][mapY])
         {
-            case 1: color = 0xFF0000; break; // Paredes rojas
-            case 2: color = 0x00FF00; break; // Paredes verdes
-            case 3: color = 0x0000FF; break; // Paredes azules
+            case 1: color = 0x00FF7FFF; break; // Paredes verdes
             default: color = 0xFFFFFF; break;  // Blanco
         }
 

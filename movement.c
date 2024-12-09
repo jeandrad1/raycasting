@@ -6,7 +6,7 @@
 /*   By: jeandrad <jeandrad@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/09 12:27:00 by jeandrad          #+#    #+#             */
-/*   Updated: 2024/12/09 12:38:50 by jeandrad         ###   ########.fr       */
+/*   Updated: 2024/12/09 12:42:36 by jeandrad         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,7 +34,7 @@ void move_player(mlx_key_data_t keydata, void *param) {
         if (!game->worldMap[(int)(game->posX - game->dirX * moveSpeed)][(int)(game->posY)]) game->posX -= game->dirX * moveSpeed;
         if (!game->worldMap[(int)(game->posX)][(int)(game->posY - game->dirY * moveSpeed)]) game->posY -= game->dirY * moveSpeed;
     }
-    if (keydata.key == MLX_KEY_A)
+    if (keydata.key == MLX_KEY_D)
     {
         double oldDirX = game->dirX;
         game->dirX = game->dirX * cos(-rotSpeed) - game->dirY * sin(-rotSpeed);
@@ -43,7 +43,7 @@ void move_player(mlx_key_data_t keydata, void *param) {
         game->planeX = game->planeX * cos(-rotSpeed) - game->planeY * sin(-rotSpeed);
         game->planeY = oldPlaneX * sin(-rotSpeed) + game->planeY * cos(-rotSpeed);
     }
-    if (keydata.key == MLX_KEY_D)
+    if (keydata.key == MLX_KEY_A)
     {
         double oldDirX = game->dirX;
         game->dirX = game->dirX * cos(rotSpeed) - game->dirY * sin(rotSpeed);
