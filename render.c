@@ -6,7 +6,7 @@
 /*   By: jeandrad <jeandrad@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/09 12:26:30 by jeandrad          #+#    #+#             */
-/*   Updated: 2024/12/09 12:42:06 by jeandrad         ###   ########.fr       */
+/*   Updated: 2024/12/09 12:46:27 by jeandrad         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,25 +40,30 @@ void update_and_render(void *param)
         double perpWallDist;
 
         // Determinar el paso en cada eje
-        if (rayDirX < 0) {
+        if (rayDirX < 0)
+        {
             stepX = -1;
             sideDistX = (game->posX - mapX) * deltaDistX;
-        } else {
+        } else
+        {
             stepX = 1;
             sideDistX = (mapX + 1.0 - game->posX) * deltaDistX;
         }
 
-        if (rayDirY < 0) {
+        if (rayDirY < 0)
+        {
             stepY = -1;
             sideDistY = (game->posY - mapY) * deltaDistY;
-        } else {
+        } else
+        {
             stepY = 1;
             sideDistY = (mapY + 1.0 - game->posY) * deltaDistY;
         }
 
         // Realizar el "DDA" (Digital Differential Analyzer) para encontrar la intersección del rayo con las paredes
         int hit = 0;
-        while (hit == 0) {
+        while (hit == 0)
+        {
             // Si el rayo golpea una pared en el eje X
             if (sideDistX < sideDistY) {
                 sideDistX += deltaDistX;
@@ -72,11 +77,11 @@ void update_and_render(void *param)
         }
 
         // Calcular la distancia hasta el punto de intersección del rayo
-        if (sideDistX < sideDistY) {
+        if (sideDistX < sideDistY)
             perpWallDist = (mapX - game->posX + (1 - stepX) / 2) / rayDirX;
-        } else {
+        else
             perpWallDist = (mapY - game->posY + (1 - stepY) / 2) / rayDirY;
-        }
+
 
         // Calcular la altura de la pared
         int lineHeight = (int)(SCREENHEIGHT / perpWallDist);
@@ -94,7 +99,6 @@ void update_and_render(void *param)
             case 1: color = 0x00FF7FFF; break; // Paredes verdes
             default: color = 0xFFFFFF; break;  // Blanco
         }
-
         // Dibujar la pared
         draw_line(game, x, drawStart, drawEnd, color);
     }
