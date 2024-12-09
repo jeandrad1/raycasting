@@ -18,46 +18,43 @@ typedef struct {
     int map[10][10];
 } game_t;
 
-// Función para dibujar un cuadrado en la imagen
-void draw_square(mlx_image_t* img, int x, int y, int size, uint32_t color) {
-    for (int i = 0; i < size; i++) {
-        for (int j = 0; j < size; j++) {
-            mlx_put_pixel(img, x + i, y + j, color);
-        }
-    }
+// Verificar si un píxel está dentro de un muro
+int is_pixel_colliding(game_t* game, int px, int py) {
+    if (px < 0 || py < 0 || px >= WIDTH || py >= HEIGHT)
+        return 1; // Fuera de los límites del mapa
+
+    int map_x = px / TILE_SIZE;
+    int map_y = py / TILE_SIZE;
+
+    return game->map[map_y][map_x] == 1; // 1 significa pared
 }
 
-// Función para dibujar el mapa
-void draw_map(mlx_image_t* img, int map[][10], int rows, int cols) {
-    for (int i = 0; i < rows; i++) {
-        for (int j = 0; j < cols; j++) {
-            if (map[i][j] == 1)
-                draw_square(img, j * TILE_SIZE, i * TILE_SIZE, TILE_SIZE, 0x0000FFFF); // Azul
-            else
-                draw_square(img, j * TILE_SIZE, i * TILE_SIZE, TILE_SIZE, 0xFFFFFFFF); // Blanco
-        }
-    }
-}
-
-// Función para verificar las colisiones del círculo con el mapa
+// Verificar si el círculo puede moverse a una nueva posición
 int is_valid_move(game_t* game, float new_x, float new_y) {
-    // Asegúrate de que el círculo no salga del mapa
-    if (new_x < 0 || new_y < 0 ||
-        new_x + CIRCLE_SIZE > WIDTH ||
-        new_y + CIRCLE_SIZE > HEIGHT) {
-        return 0; // Movimiento no válido
+    for (int i = 0; i < CIRCLE_SIZE; i++) {
+        for (int j = 0; j < CIRCLE_SIZE; j++) {
+            if (is_pixel_colliding(game, new_x + i, new_y + j))
+                return 0; // Colisión detectada
+        }
     }
-
-    int map_x = (int)(new_x + CIRCLE_SIZE / 2) / TILE_SIZE;
-    int map_y = (int)(new_y + CIRCLE_SIZE / 2) / TILE_SIZE;
-
-    if (game->map[map_y][map_x] == 1)
-        return 0; // Colisión con una pared
-
     return 1; // Movimiento válido
 }
 
-// Función principal del bucle del juego
+// Dibujar el mapa
+void draw_map(mlx_image_t* img, int map[][10], int rows, int cols) {
+    for (int i = 0; i < rows; i++) {
+        for (int j = 0; j < cols; j++) {
+            uint32_t color = (map[i][j] == 1) ? 0x0000FFFF : 0xFFFFFFFF; // Azul y blanco
+            for (int y = 0; y < TILE_SIZE; y++) {
+                for (int x = 0; x < TILE_SIZE; x++) {
+                    mlx_put_pixel(img, j * TILE_SIZE + x, i * TILE_SIZE + y, color);
+                }
+            }
+        }
+    }
+}
+
+// Bucle principal del juego
 void game_loop(void* param) {
     game_t* game = (game_t*)param;
 
@@ -108,8 +105,8 @@ int main(void) {
         {1, 0, 1, 1, 0, 1, 0, 1, 0, 1},
         {1, 0, 0, 0, 1, 0, 0, 1, 0, 1},
         {1, 1, 1, 0, 1, 1, 1, 1, 0, 1},
-        {1, 0, 0, 0, 1, 0, 0, 0, 0, 1},
-        {1, 1, 1, 1, 0, 1, 1, 1, 0, 1},
+        {1, 0, 0, 0, 0, 0, 0, 0, 0, 1},
+        {1, 1, 1, 0, 0, 1, 1, 1, 0, 1},
         {1, 1, 1, 1, 1, 1, 1, 1, 1, 1}
     };
 
@@ -147,14 +144,23 @@ int main(void) {
     game.mlx = mlx;
     game.img = img;
     game.circle_img = circle_img;
-    game.x = TILE_SIZE;
-    game.y = TILE_SIZE;
     game.angle = 0;
 
     memcpy(game.map, map, sizeof(map));
 
+    // Encontrar una posición inicial válida
+    for (int i = 0; i < 10; i++) {
+        for (int j = 0; j < 10; j++) {
+            if (map[i][j] == 0) {
+                game.x = j * TILE_SIZE;
+                game.y = i * TILE_SIZE;
+                break;
+            }
+        }
+    }
+
     mlx_image_to_window(mlx, circle_img, game.x, game.y);
-    mlx_loop_hook(mlx, game_loop, &game); // Configuración del loop principal
+    mlx_loop_hook(mlx, game_loop, &game);
     mlx_loop(mlx);
 
     mlx_delete_image(mlx, img);

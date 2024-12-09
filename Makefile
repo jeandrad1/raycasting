@@ -1,5 +1,5 @@
 # Name: raycasting
-NAME = raycasting
+NAME = cub3d
 
 # Compiler
 CC = clang
@@ -23,7 +23,7 @@ MLX_PATH = ./MLX42
 MLX = $(MLX_PATH)/libmlx42.a
 
 # Source files for mandatory
-FILES = testing.c
+FILES = drawing.c cub3d.c movement.c render.c
 
 # Object files
 OBJS = $(FILES:.c=.o)
@@ -35,7 +35,7 @@ OBJS = $(FILES:.c=.o)
 # Build rule for mandatory
 $(NAME): $(LIBFT) $(MLX) $(OBJS)
 	@$(CC) $(FLAGS) $(GLFW) $(OBJS) $(LIBFT) $(MLX) -o $(NAME)
-	@echo "raycasting created"
+	@echo "cub3d created"
 
 # Build rule for libft
 $(LIBFT):
