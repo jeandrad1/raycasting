@@ -6,7 +6,7 @@
 /*   By: jeandrad <jeandrad@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/09 12:27:00 by jeandrad          #+#    #+#             */
-/*   Updated: 2024/12/11 18:44:24 by jeandrad         ###   ########.fr       */
+/*   Updated: 2024/12/11 19:09:22 by jeandrad         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,8 @@ void move_player(mlx_key_data_t keydata, void *param)
     double moveSpeed = MOVE_SPEED;
     double rotSpeed = ROT_SPEED;
 
-    if (keydata.key == MLX_KEY_ESCAPE) {
+    if (keydata.key == MLX_KEY_ESCAPE)
+    {
         mlx_close_window(game->mlx);
         free_map(game->worldMap, game->mapHeight);
         exit(0);

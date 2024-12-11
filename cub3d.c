@@ -6,7 +6,7 @@
 /*   By: jeandrad <jeandrad@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/09 12:23:11 by jeandrad          #+#    #+#             */
-/*   Updated: 2024/12/11 18:48:46 by jeandrad         ###   ########.fr       */
+/*   Updated: 2024/12/11 19:28:33 by jeandrad         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,10 +41,11 @@ int main()
     t_game game;
 
     // Datos iniciales del mapa
-    const char *mapData[] = {
+    const char *mapData[] =
+    {
         "111111",
         "100001",
-        "101101",
+        "100001",
         "100001",
         "111111"
     };

@@ -17,8 +17,8 @@
 // Todo esto deberia ir en una structura con valores fijos
 # define MAPWIDTH 10
 # define MAPHEIGHT 10
-# define SCREENWIDTH 640
-# define SCREENHEIGHT 480
+# define SCREENWIDTH 1920
+# define SCREENHEIGHT 1280
 # define MOVE_SPEED 0.1
 # define ROT_SPEED 0.05
 

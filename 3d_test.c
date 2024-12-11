@@ -6,7 +6,7 @@
 /*   By: jeandrad <jeandrad@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/09 11:10:38 by jeandrad          #+#    #+#             */
-/*   Updated: 2024/12/09 12:31:24 by jeandrad         ###   ########.fr       */
+/*   Updated: 2024/12/11 19:27:51 by jeandrad         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -146,7 +146,8 @@ sX + (1 - stepX) / 2) / rayDirX;
 }
 
 // Función para manejar las teclas (MLX42 no tiene función directa para esto, se maneja de otra forma)
-void move_player(mlx_key_data_t keydata, void *param) {
+void move_player(mlx_key_data_t keydata, void *param)
+{
     t_game *game = (t_game *)param;
     double moveSpeed = 0.1;
     double rotSpeed = 0.05;
