@@ -6,7 +6,7 @@
 /*   By: jeandrad <jeandrad@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/09 12:23:11 by jeandrad          #+#    #+#             */
-/*   Updated: 2024/12/11 19:28:33 by jeandrad         ###   ########.fr       */
+/*   Updated: 2024/12/11 19:46:48 by jeandrad         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,11 +43,12 @@ int main()
     // Datos iniciales del mapa
     const char *mapData[] =
     {
-        "111111",
-        "100001",
-        "100001",
-        "100001",
-        "111111"
+        "11111111",
+        "10010001",
+        "10101001",
+        "10010001",
+        "10000001",
+        "11111111"
     };
     int mapHeight = sizeof(mapData) / sizeof(mapData[0]);
     int mapWidth = strlen(mapData[0]);
