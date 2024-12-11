@@ -6,33 +6,37 @@
 /*   By: jeandrad <jeandrad@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/09 12:27:00 by jeandrad          #+#    #+#             */
-/*   Updated: 2024/12/09 12:42:36 by jeandrad         ###   ########.fr       */
+/*   Updated: 2024/12/11 18:44:24 by jeandrad         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "cub3d.h"
 
-// Función para manejar las teclas (no he conseguido que vaya la mlx_key_down)
-void move_player(mlx_key_data_t keydata, void *param) {
+// Función para mover al jugador
+void move_player(mlx_key_data_t keydata, void *param)
+{
     t_game *game = (t_game *)param;
-    double moveSpeed = 0.1;
-    double rotSpeed = 0.05;
+    double moveSpeed = MOVE_SPEED;
+    double rotSpeed = ROT_SPEED;
 
-
-    if (keydata.key == MLX_KEY_ESCAPE)
-    {
+    if (keydata.key == MLX_KEY_ESCAPE) {
         mlx_close_window(game->mlx);
+        free_map(game->worldMap, game->mapHeight);
         exit(0);
     }
     if (keydata.key == MLX_KEY_W)
     {
-        if (!game->worldMap[(int)(game->posX + game->dirX * moveSpeed)][(int)(game->posY)]) game->posX += game->dirX * moveSpeed;
-        if (!game->worldMap[(int)(game->posX)][(int)(game->posY + game->dirY * moveSpeed)]) game->posY += game->dirY * moveSpeed;
+        if (game->worldMap[(int)(game->posY)][(int)(game->posX + game->dirX * moveSpeed)] == '0')
+            game->posX += game->dirX * moveSpeed;
+        if (game->worldMap[(int)(game->posY + game->dirY * moveSpeed)][(int)(game->posX)] == '0')
+            game->posY += game->dirY * moveSpeed;
     }
     if (keydata.key == MLX_KEY_S)
     {
-        if (!game->worldMap[(int)(game->posX - game->dirX * moveSpeed)][(int)(game->posY)]) game->posX -= game->dirX * moveSpeed;
-        if (!game->worldMap[(int)(game->posX)][(int)(game->posY - game->dirY * moveSpeed)]) game->posY -= game->dirY * moveSpeed;
+        if (game->worldMap[(int)(game->posY)][(int)(game->posX - game->dirX * moveSpeed)] == '0')
+            game->posX -= game->dirX * moveSpeed;
+        if (game->worldMap[(int)(game->posY - game->dirY * moveSpeed)][(int)(game->posX)] == '0')
+            game->posY -= game->dirY * moveSpeed;
     }
     if (keydata.key == MLX_KEY_D)
     {
