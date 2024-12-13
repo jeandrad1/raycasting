@@ -6,7 +6,7 @@
 /*   By: jeandrad <jeandrad@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/09 12:23:11 by jeandrad          #+#    #+#             */
-/*   Updated: 2024/12/13 19:12:20 by jeandrad         ###   ########.fr       */
+/*   Updated: 2024/12/13 19:55:01 by jeandrad         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,8 +41,12 @@ char	**initialize_map(const char *mapData[], int mapHeight)
 int	main(void)
 {
 	t_game		game;
-	const char	*mapData[] = {"11111111", "10010001", "10101001", "10010001",
-			"10000001", "11111111"};
+	const char	*mapData[] = {"11111111",
+                              "10010001",
+                              "10010101",
+                              "10000001",
+			                  "10000001",
+                              "11111111"};
 	int			mapHeight;
 	int			mapWidth;
 
