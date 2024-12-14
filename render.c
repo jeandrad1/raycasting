@@ -6,7 +6,7 @@
 /*   By: jeandrad <jeandrad@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/09 12:26:30 by jeandrad          #+#    #+#             */
-/*   Updated: 2024/12/11 19:33:29 by jeandrad         ###   ########.fr       */
+/*   Updated: 2024/12/14 11:44:00 by jeandrad         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,10 +14,12 @@
 
 void update_and_render(void *param)
 {
+    int x;
+
+    x = 0;
     t_game *game = (t_game *)param;
     clear_image(game->image, 0x000000FF); // Limpiar pantalla
-
-    for (int x = 0; x < SCREENWIDTH; x++)
+    while (x < SCREENWIDTH)
     {
         double cameraX = 2 * x / (double)SCREENWIDTH - 1;
         double rayDirX = game->dirX + game->planeX * cameraX;
@@ -98,8 +100,9 @@ void update_and_render(void *param)
         }
 
         if (side == 1) color = color / 2; // Make y-side walls darker
-
+        
         draw_line(game, x, drawStart, drawEnd, color);
+        x++;
     }
     mlx_image_to_window(game->mlx, game->image, 0, 0);
 }
