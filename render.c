@@ -6,11 +6,43 @@
 /*   By: jeandrad <jeandrad@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/09 12:26:30 by jeandrad          #+#    #+#             */
-/*   Updated: 2024/12/14 17:25:56 by jeandrad         ###   ########.fr       */
+/*   Updated: 2024/12/14 17:29:11 by jeandrad         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "cub3d.h"
+
+void coloring(t_lines *lines, t_game *game, t_ray *ray)
+{
+    switch (game->worldMap[ray->mapY][ray->mapX])
+    {
+    case '1':
+        lines->color = 0x00FF7FFF;
+        break ; // Verde
+    case '3':
+        lines->color = 0xFF0000FF;
+        break ; // Rojo
+    default:
+        lines->color = 0xFFFFFF;
+        break ; // Blanco
+    }
+    if (lines->side == 1)
+        lines->color = lines->color / 2; // Make y-side walls darker
+}
+
+void ray_y(t_game game, t_ray *ray)
+{
+    if (ray->rayDirY < 0)
+    {
+        ray->stepY = -1;
+        ray->sideDistY = (game.posY - ray->mapY) * ray->deltaDistY;
+    }
+    else
+    {
+        ray->stepY = 1;
+        ray->sideDistY = (ray->mapY + 1.0 - game.posY) * ray->deltaDistY;
+    }
+}
 
 void	dda_function(t_ray *ray, t_game *game, int *hit, int *side)
 {
@@ -58,16 +90,7 @@ void	init_ray(t_ray *ray, t_game *game, int x)
 		ray->stepX = 1;
 		ray->sideDistX = (ray->mapX + 1.0 - game->posX) * ray->deltaDistX;
 	}
-	if (ray->rayDirY < 0)
-	{
-		ray->stepY = -1;
-		ray->sideDistY = (game->posY - ray->mapY) * ray->deltaDistY;
-	}
-	else
-	{
-		ray->stepY = 1;
-		ray->sideDistY = (ray->mapY + 1.0 - game->posY) * ray->deltaDistY;
-	}
+    ray_y(*game, ray);
 }
 
 void	update_and_render(void *param)
@@ -92,20 +115,7 @@ void	update_and_render(void *param)
 		lines.drawEnd = lines.lineHeight / 2 + SCREENHEIGHT / 2;
 		if (lines.drawEnd >= SCREENHEIGHT)
 			lines.drawEnd = SCREENHEIGHT - 1;
-		switch (game->worldMap[ray.mapY][ray.mapX])
-		{
-		case '1':
-			lines.color = 0x00FF7FFF;
-			break ; // Verde
-		case '3':
-			lines.color = 0xFF0000FF;
-			break ; // Rojo
-		default:
-			lines.color = 0xFFFFFF;
-			break ; // Blanco
-		}
-		if (lines.side == 1)
-			lines.color = lines.color / 2; // Make y-side walls darker
+        coloring(&lines, game, &ray);
 		draw_line(game, lines.x, lines.drawStart, lines.drawEnd, lines.color);
 		lines.x++;
 	}
