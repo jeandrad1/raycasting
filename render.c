@@ -6,83 +6,86 @@
 /*   By: jeandrad <jeandrad@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/09 12:26:30 by jeandrad          #+#    #+#             */
-/*   Updated: 2024/12/14 11:44:00 by jeandrad         ###   ########.fr       */
+/*   Updated: 2024/12/14 15:52:16 by jeandrad         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "cub3d.h"
 
+void init_ray(t_ray *ray, t_game *game, int x)
+{
+    ray->cameraX = 2 * x / (double)SCREENWIDTH - 1;
+    ray->rayDirX = game->dirX + game->planeX * ray->cameraX;
+    ray->rayDirY = game->dirY + game->planeY * ray->cameraX;
+
+    ray->mapX = (int)game->posX;
+    ray->mapY = (int)game->posY;
+
+    ray->deltaDistX = fabs(1 / ray->rayDirX);
+    ray->deltaDistY = fabs(1 / ray->rayDirY);
+
+    if (ray->rayDirX < 0)
+    {
+        ray->stepX = -1;
+        ray->sideDistX = (game->posX - ray->mapX) * ray->deltaDistX;
+    } 
+    else
+    {
+        ray->stepX = 1;
+        ray->sideDistX = (ray->mapX + 1.0 - game->posX) * ray->deltaDistX;
+    }
+
+    if (ray->rayDirY < 0)
+    {
+        ray->stepY = -1;
+        ray->sideDistY = (game->posY - ray->mapY) * ray->deltaDistY;
+    } 
+    else
+    {
+        ray->stepY = 1;
+        ray->sideDistY = (ray->mapY + 1.0 - game->posY) * ray->deltaDistY;
+    }
+}
+
 void update_and_render(void *param)
 {
     int x;
+    int hit;
+    int side;
 
     x = 0;
     t_game *game = (t_game *)param;
     clear_image(game->image, 0x000000FF); // Limpiar pantalla
+
     while (x < SCREENWIDTH)
     {
-        double cameraX = 2 * x / (double)SCREENWIDTH - 1;
-        double rayDirX = game->dirX + game->planeX * cameraX;
-        double rayDirY = game->dirY + game->planeY * cameraX;
-
-        int mapX = (int)game->posX;
-        int mapY = (int)game->posY;
-
-        double sideDistX, sideDistY;
-        int stepX, stepY;
-
-        double deltaDistX = fabs(1 / rayDirX);
-        double deltaDistY = fabs(1 / rayDirY);
-        double perpWallDist;
-
-        if (rayDirX < 0)
-        {
-            stepX = -1;
-            sideDistX = (game->posX - mapX) * deltaDistX;
-        } 
-        else
-        {
-            stepX = 1;
-            sideDistX = (mapX + 1.0 - game->posX) * deltaDistX;
-        }
-
-        if (rayDirY < 0)
-        {
-            stepY = -1;
-            sideDistY = (game->posY - mapY) * deltaDistY;
-        } 
-        else
-        {
-            stepY = 1;
-            sideDistY = (mapY + 1.0 - game->posY) * deltaDistY;
-        }
-
-        int hit = 0;
-        int side; // Was a NS or a EW wall hit?
+        t_ray ray;
+        init_ray(&ray, game, x);
+        hit = 0;
         while (hit == 0)
         {
-            if (sideDistX < sideDistY) 
+            if (ray.sideDistX < ray.sideDistY) 
             {
-                sideDistX += deltaDistX;
-                mapX += stepX;
+                ray.sideDistX += ray.deltaDistX;
+                ray.mapX += ray.stepX;
                 side = 0;
             } 
             else 
             {
-                sideDistY += deltaDistY;
-                mapY += stepY;
+                ray.sideDistY += ray.deltaDistY;
+                ray.mapY += ray.stepY;
                 side = 1;
             }
-            if (game->worldMap[mapY][mapX] > '0')
+            if (game->worldMap[ray.mapY][ray.mapX] > '0')
                 hit = 1;
         }
 
         if (side == 0)
-            perpWallDist = (mapX - game->posX + (1 - stepX) / 2) / rayDirX;
+            ray.perpWallDist = (ray.mapX - game->posX + (1 - ray.stepX) / 2) / ray.rayDirX;
         else
-            perpWallDist = (mapY - game->posY + (1 - stepY) / 2) / rayDirY;
+            ray.perpWallDist = (ray.mapY - game->posY + (1 - ray.stepY) / 2) / ray.rayDirY;
                     
-        int lineHeight = (int)(SCREENHEIGHT / perpWallDist);
+        int lineHeight = (int)(SCREENHEIGHT / ray.perpWallDist);
         int drawStart = -lineHeight / 2 + SCREENHEIGHT / 2;
         if (drawStart < 0)
             drawStart = 0;
@@ -92,7 +95,7 @@ void update_and_render(void *param)
             drawEnd = SCREENHEIGHT - 1;
 
         uint32_t color;
-        switch (game->worldMap[mapY][mapX])
+        switch (game->worldMap[ray.mapY][ray.mapX])
         {
             case '1': color = 0x00FF7FFF; break; // Verde
             case '3': color = 0xFF0000FF; break; // Rojo

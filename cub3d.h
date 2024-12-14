@@ -19,7 +19,7 @@
 # define SCREENWIDTH 1920
 # define SCREENHEIGHT 1280
 # define MOVE_SPEED 0.1
-# define ROT_SPEED 0.05
+# define ROT_SPEED 0.03
 
 typedef struct
 {
@@ -32,6 +32,23 @@ typedef struct
     int mapWidth;
     int mapHeight;
 } t_game;
+
+typedef struct
+{
+    double cameraX;
+    double rayDirX;
+    double rayDirY;
+    int mapX;
+    int mapY;
+    double sideDistX;
+    double sideDistY;
+    int stepX;
+    int stepY;
+    double deltaDistX;
+    double deltaDistY;
+    double perpWallDist;
+} t_ray;
+
 
 //funciones
 void clear_image(mlx_image_t *image, uint32_t color);
