@@ -49,6 +49,16 @@ typedef struct
     double perpWallDist;
 } t_ray;
 
+typedef struct lines
+{
+    int     x;   
+    int     hit;
+    int     side;   
+	int		lineHeight;
+	int		drawStart;
+	int		drawEnd;
+	uint32_t color;
+} t_lines;
 
 //funciones
 void clear_image(mlx_image_t *image, uint32_t color);

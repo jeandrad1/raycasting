@@ -6,7 +6,7 @@
 /*   By: jeandrad <jeandrad@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/09 12:26:30 by jeandrad          #+#    #+#             */
-/*   Updated: 2024/12/14 16:00:13 by jeandrad         ###   ########.fr       */
+/*   Updated: 2024/12/14 17:25:56 by jeandrad         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -72,47 +72,42 @@ void	init_ray(t_ray *ray, t_game *game, int x)
 
 void	update_and_render(void *param)
 {
-	int		x;
-	int		hit;
-	int		side;
+    t_lines lines;
 	t_game	*game;
-		t_ray ray;
-	int		lineHeight;
-	int		drawStart;
-	int		drawEnd;
-		uint32_t color;
+	t_ray   ray;
+    
 
-	x = 0;
+	lines.x = 0;
 	game = (t_game *)param;
 	clear_image(game->image, 0x000000FF); // Limpiar pantalla
-	while (x < SCREENWIDTH)
+	while (lines.x < SCREENWIDTH)
 	{
-		init_ray(&ray, game, x);
-		hit = 0;
-		dda_function(&ray, game, &hit, &side);
-		lineHeight = (int)(SCREENHEIGHT / ray.perpWallDist);
-		drawStart = -lineHeight / 2 + SCREENHEIGHT / 2;
-		if (drawStart < 0)
-			drawStart = 0;
-		drawEnd = lineHeight / 2 + SCREENHEIGHT / 2;
-		if (drawEnd >= SCREENHEIGHT)
-			drawEnd = SCREENHEIGHT - 1;
+		init_ray(&ray, game, lines.x);
+		lines.hit = 0;
+		dda_function(&ray, game, &lines.hit, &lines.side);
+		lines.lineHeight = (int)(SCREENHEIGHT / ray.perpWallDist);
+		lines.drawStart = -lines.lineHeight / 2 + SCREENHEIGHT / 2;
+		if (lines.drawStart < 0)
+			lines.drawStart = 0;
+		lines.drawEnd = lines.lineHeight / 2 + SCREENHEIGHT / 2;
+		if (lines.drawEnd >= SCREENHEIGHT)
+			lines.drawEnd = SCREENHEIGHT - 1;
 		switch (game->worldMap[ray.mapY][ray.mapX])
 		{
 		case '1':
-			color = 0x00FF7FFF;
+			lines.color = 0x00FF7FFF;
 			break ; // Verde
 		case '3':
-			color = 0xFF0000FF;
+			lines.color = 0xFF0000FF;
 			break ; // Rojo
 		default:
-			color = 0xFFFFFF;
+			lines.color = 0xFFFFFF;
 			break ; // Blanco
 		}
-		if (side == 1)
-			color = color / 2; // Make y-side walls darker
-		draw_line(game, x, drawStart, drawEnd, color);
-		x++;
+		if (lines.side == 1)
+			lines.color = lines.color / 2; // Make y-side walls darker
+		draw_line(game, lines.x, lines.drawStart, lines.drawEnd, lines.color);
+		lines.x++;
 	}
 	mlx_image_to_window(game->mlx, game->image, 0, 0);
 }
