@@ -6,7 +6,7 @@
 /*   By: jeandrad <jeandrad@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/09 12:26:30 by jeandrad          #+#    #+#             */
-/*   Updated: 2024/12/14 17:29:11 by jeandrad         ###   ########.fr       */
+/*   Updated: 2024/12/17 17:00:02 by jeandrad         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -93,6 +93,13 @@ void	init_ray(t_ray *ray, t_game *game, int x)
     ray_y(*game, ray);
 }
 
+void draw_floor_and_ceiling(t_game *game, int x, int drawEnd, int drawStart)
+{
+    draw_line(game, x, drawEnd + 1, SCREENHEIGHT, 0xAAAAAAFF); // Color gris claro
+    draw_line(game, x, 0, drawStart, 0x87CEEBFF); // Color azul claro para el cielo
+}
+
+
 void	update_and_render(void *param)
 {
     t_lines lines;
@@ -117,6 +124,7 @@ void	update_and_render(void *param)
 			lines.drawEnd = SCREENHEIGHT - 1;
         coloring(&lines, game, &ray);
 		draw_line(game, lines.x, lines.drawStart, lines.drawEnd, lines.color);
+		draw_floor_and_ceiling(game, lines.x, lines.drawEnd, lines.drawStart);
 		lines.x++;
 	}
 	mlx_image_to_window(game->mlx, game->image, 0, 0);
