@@ -34,6 +34,7 @@ typedef struct
     mlx_t *mlx;
     mlx_image_t *image;
     t_textures textures;
+    mlx_texture_t *texture;
     double posX, posY;    // Posición del jugador
     double dirX, dirY;    // Dirección de la cámara
     double planeX, planeY; // Plano de la cámara (para la perspectiva)
@@ -41,6 +42,7 @@ typedef struct
     int mapWidth;
     int mapHeight;
     char initialOrientation; // Orientación inicial del jugador
+    uint32_t color;
 } t_game;
 
 typedef struct
