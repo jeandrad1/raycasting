@@ -1,5 +1,5 @@
 # Name: raycasting
-NAME = cub3d
+NAME = cub3d_prueba
 
 # Compiler
 CC = clang
@@ -23,7 +23,7 @@ MLX_PATH = ./MLX42
 MLX = $(MLX_PATH)/libmlx42.a
 
 # Source files for mandatory
-FILES = drawing.c cub3d.c movement.c render.c
+FILES = drawing.c cub3d.c movement.c render.c textures.c
 
 # Object files
 OBJS = $(FILES:.c=.o)

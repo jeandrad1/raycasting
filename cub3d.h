@@ -23,8 +23,17 @@
 
 typedef struct
 {
+    mlx_texture_t *north;
+    mlx_texture_t *south;
+    mlx_texture_t *west;
+    mlx_texture_t *east;
+} t_textures;
+
+typedef struct
+{
     mlx_t *mlx;
     mlx_image_t *image;
+    t_textures textures;
     double posX, posY;    // Posición del jugador
     double dirX, dirY;    // Dirección de la cámara
     double planeX, planeY; // Plano de la cámara (para la perspectiva)
@@ -67,6 +76,7 @@ void move_player(mlx_key_data_t keydata, void *param);
 void update_and_render(void *param);
 char **initialize_map(const char *mapData[], int mapHeight);
 void free_map(char **map, int mapHeight);
+void load_walls(t_game *game);
 
 
 
