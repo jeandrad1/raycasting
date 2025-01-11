@@ -84,7 +84,7 @@ void clear_image(mlx_image_t *image, uint32_t color);
 void draw_line(t_game *game, int x, int start, int end, uint32_t color);
 void move_player(mlx_key_data_t keydata, void *param);
 void update_and_render(void *param);
-char	**initialize_map(const char *mapData[], int mapHeight, t_game *game);
+char **initialize_map(char *mapData[], int mapHeight, t_game *game);
 void free_map(char **map, int mapHeight);
 void load_walls(t_game *game);
 

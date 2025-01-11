@@ -6,11 +6,55 @@
 /*   By: jeandrad <jeandrad@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/09 12:23:11 by jeandrad          #+#    #+#             */
-/*   Updated: 2025/01/11 15:24:46 by jeandrad         ###   ########.fr       */
+/*   Updated: 2025/01/11 18:19:24 by jeandrad         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "cub3d.h"
+
+char **read_map_from_file(const char *filename, int *mapHeight)
+{
+    int fd = open(filename, O_RDONLY);
+    if (fd < 0)
+    {
+        perror("Error al abrir el archivo");
+        return NULL;
+    }
+
+    char **map = NULL;
+    char *line;
+    int height = 0;
+    int capacity = 10; // Capacidad inicial para 10 líneas
+
+    map = malloc(capacity * sizeof(char *));
+    if (!map)
+    {
+        perror("Error al asignar memoria");
+        close(fd);
+        return NULL;
+    }
+
+    while ((line = get_next_line(fd)) != NULL)
+    {
+        if (height >= capacity)
+        {
+            capacity *= 2;
+            char **new_map = realloc(map, capacity * sizeof(char *));
+            if (!new_map)
+            {
+                perror("Error al reasignar memoria");
+                free(map);
+                close(fd);
+                return NULL;
+            }
+            map = new_map;
+        }
+        map[height++] = line;
+    }
+    close(fd);
+    *mapHeight = height;
+    return map;
+}
 
 void	free_map(char **map, int mapHeight)
 {
@@ -18,7 +62,8 @@ void	free_map(char **map, int mapHeight)
 		free(map[i]);
 	free(map);
 }
-char	**initialize_map(const char *mapData[], int mapHeight, t_game *game)
+
+char	**initialize_map(char **mapData, int mapHeight, t_game *game)
 {
     char	**map;
 
@@ -79,20 +124,27 @@ void set_initial_orientation(t_game *game)
     }
 }
 
-int	main(void)
+int	main(int argc, char **argv)
 {
+    if (argc != 2)
+    {
+        fprintf(stderr, "Uso: %s <archivo_mapa.ber>\n", argv[0]);
+        return (1);
+    }
+
     t_game		game;
-    const char	*mapData[] = {"11111111",
-                              "10010001",
-                              "10010101",
-                              "100E0001",
-                              "10000001",
-                              "11111111"};
     int			mapHeight;
     int			mapWidth;
+    char        **mapData;
 
-    // Datos iniciales del mapa
-    mapHeight = sizeof(mapData) / sizeof(mapData[0]);
+    // Leer el mapa desde el archivo
+    mapData = read_map_from_file(argv[1], &mapHeight);
+    if (!mapData)
+    {
+        fprintf(stderr, "Error: no se pudo leer el mapa del archivo.\n");
+        return (1);
+    }
+
     mapWidth = strlen(mapData[0]);
     game.mapHeight = mapHeight;
     game.mapWidth = mapWidth;
