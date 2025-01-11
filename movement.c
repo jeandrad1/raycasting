@@ -6,7 +6,7 @@
 /*   By: jeandrad <jeandrad@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/09 12:27:00 by jeandrad          #+#    #+#             */
-/*   Updated: 2025/01/11 14:57:17 by jeandrad         ###   ########.fr       */
+/*   Updated: 2025/01/11 15:26:38 by jeandrad         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,43 +27,50 @@ void escape_key(mlx_key_data_t keydata, void *param)
 void foward_and_back_mov(mlx_key_data_t keydata, void *param)
 {
     t_game *game = (t_game *)param;
-
     double moveSpeed = MOVE_SPEED;
+
     if (keydata.key == MLX_KEY_W)
     {
-        if (game->worldMap[(int)(game->posY)][(int)(game->posX + game->dirX * moveSpeed)] == '0')
+        if (game->worldMap[(int)(game->posY + game->dirY * moveSpeed + PLAYER_RADIUS)][(int)(game->posX + game->dirX * moveSpeed + PLAYER_RADIUS)] == '0' &&
+            game->worldMap[(int)(game->posY + game->dirY * moveSpeed - PLAYER_RADIUS)][(int)(game->posX + game->dirX * moveSpeed - PLAYER_RADIUS)] == '0')
+        {
             game->posX += game->dirX * moveSpeed;
-        if (game->worldMap[(int)(game->posY + game->dirY * moveSpeed)][(int)(game->posX)] == '0')
             game->posY += game->dirY * moveSpeed;
+        }
     }
     if (keydata.key == MLX_KEY_S)
     {
-        if (game->worldMap[(int)(game->posY)][(int)(game->posX - game->dirX * moveSpeed)] == '0')
+        if (game->worldMap[(int)(game->posY - game->dirY * moveSpeed + PLAYER_RADIUS)][(int)(game->posX - game->dirX * moveSpeed + PLAYER_RADIUS)] == '0' &&
+            game->worldMap[(int)(game->posY - game->dirY * moveSpeed - PLAYER_RADIUS)][(int)(game->posX - game->dirX * moveSpeed - PLAYER_RADIUS)] == '0')
+        {
             game->posX -= game->dirX * moveSpeed;
-        if (game->worldMap[(int)(game->posY - game->dirY * moveSpeed)][(int)(game->posX)] == '0')
             game->posY -= game->dirY * moveSpeed;
+        }
     }
 }
 
 void side_mov(mlx_key_data_t keydata, void *param)
 {
     t_game *game = (t_game *)param;
-
     double moveSpeed = MOVE_SPEED;
 
-    if (keydata.key == MLX_KEY_D)
-    {
-        if (game->worldMap[(int)(game->posY)][(int)(game->posX + game->planeX * moveSpeed)] == '0')
-            game->posX += game->planeX * moveSpeed;
-        if (game->worldMap[(int)(game->posY + game->planeY * moveSpeed)][(int)(game->posX)] == '0')
-            game->posY += game->planeY * moveSpeed;
-    }
     if (keydata.key == MLX_KEY_A)
     {
-        if (game->worldMap[(int)(game->posY)][(int)(game->posX - game->planeX * moveSpeed)] == '0')
+        if (game->worldMap[(int)(game->posY - game->planeY * moveSpeed + PLAYER_RADIUS)][(int)(game->posX - game->planeX * moveSpeed + PLAYER_RADIUS)] == '0' &&
+            game->worldMap[(int)(game->posY - game->planeY * moveSpeed - PLAYER_RADIUS)][(int)(game->posX - game->planeX * moveSpeed - PLAYER_RADIUS)] == '0')
+        {
             game->posX -= game->planeX * moveSpeed;
-        if (game->worldMap[(int)(game->posY - game->planeY * moveSpeed)][(int)(game->posX)] == '0')
             game->posY -= game->planeY * moveSpeed;
+        }
+    }
+    if (keydata.key == MLX_KEY_D)
+    {
+        if (game->worldMap[(int)(game->posY + game->planeY * moveSpeed + PLAYER_RADIUS)][(int)(game->posX + game->planeX * moveSpeed + PLAYER_RADIUS)] == '0' &&
+            game->worldMap[(int)(game->posY + game->planeY * moveSpeed - PLAYER_RADIUS)][(int)(game->posX + game->planeX * moveSpeed - PLAYER_RADIUS)] == '0')
+        {
+            game->posX += game->planeX * moveSpeed;
+            game->posY += game->planeY * moveSpeed;
+        }
     }
 }
 

@@ -6,7 +6,7 @@
 /*   By: jeandrad <jeandrad@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/09 12:23:11 by jeandrad          #+#    #+#             */
-/*   Updated: 2025/01/11 14:57:35 by jeandrad         ###   ########.fr       */
+/*   Updated: 2025/01/11 15:24:46 by jeandrad         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -102,6 +102,7 @@ int	main(void)
         fprintf(stderr, "Error: no se pudo inicializar el mapa.\n");
         return (1);
     }
+	// Inicializar el juego a cero todo 
     game.mlx = mlx_init(SCREENWIDTH, SCREENHEIGHT, "Cub3D", true);
     if (!game.mlx)
     {

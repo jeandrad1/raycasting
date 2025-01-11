@@ -20,6 +20,7 @@
 # define SCREENHEIGHT 1280
 # define MOVE_SPEED 0.1
 # define ROT_SPEED 0.03
+# define PLAYER_RADIUS 0.2
 
 typedef struct
 {
@@ -35,9 +36,12 @@ typedef struct
     mlx_image_t *image;
     t_textures textures;
     mlx_texture_t *texture;
-    double posX, posY;    // Posición del jugador
-    double dirX, dirY;    // Dirección de la cámara
-    double planeX, planeY; // Plano de la cámara (para la perspectiva)
+    double posX;
+    double posY;    // Posición del jugador
+    double dirX;
+    double dirY;    // Dirección de la cámara
+    double planeX;
+    double planeY; // Plano de la cámara (para la perspectiva)
     char **worldMap;      // Mapa del mundo
     int mapWidth;
     int mapHeight;
@@ -69,6 +73,9 @@ typedef struct lines
 	int		lineHeight;
 	int		drawStart;
 	int		drawEnd;
+    int     tex_x;
+    int     tex_y;
+    double  wall_x;
 	uint32_t color;
 } t_lines;
 
