@@ -6,7 +6,7 @@
 /*   By: jeandrad <jeandrad@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/09 12:27:00 by jeandrad          #+#    #+#             */
-/*   Updated: 2025/01/11 17:56:34 by jeandrad         ###   ########.fr       */
+/*   Updated: 2025/01/11 18:52:08 by jeandrad         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,54 +24,102 @@ void escape_key(mlx_key_data_t keydata, void *param)
     }
 }
 
-void key_w(mlx_key_data_t keydata, void *param)
+void	move_forward(t_game *game, double moveSpeed)
 {
-    t_game *game = (t_game *)param;
-    double moveSpeed = MOVE_SPEED;
+    if (game->worldMap[(int)(game->posY + game->dirY * moveSpeed
+            + PLAYER_RADIUS)][(int)(game->posX)] == '0'
+        && game->worldMap[(int)(game->posY + game->dirY * moveSpeed
+            - PLAYER_RADIUS)][(int)(game->posX)] == '0'
+        && game->worldMap[(int)(game->posY + game->dirY
+            * moveSpeed)][(int)(game->posX + PLAYER_RADIUS)] == '0'
+        && game->worldMap[(int)(game->posY + game->dirY
+            * moveSpeed)][(int)(game->posX - PLAYER_RADIUS)] == '0')
+    {
+        game->posY += game->dirY * moveSpeed;
+    }
+}
 
+void	move_right(t_game *game, double moveSpeed)
+{
+    if (game->worldMap[(int)(game->posY)][(int)(game->posX + game->dirX
+            * moveSpeed + PLAYER_RADIUS)] == '0'
+        && game->worldMap[(int)(game->posY)][(int)(game->posX + game->dirX
+            * moveSpeed - PLAYER_RADIUS)] == '0'
+        && game->worldMap[(int)(game->posY
+            + PLAYER_RADIUS)][(int)(game->posX + game->dirX
+            * moveSpeed)] == '0' && game->worldMap[(int)(game->posY
+            - PLAYER_RADIUS)][(int)(game->posX + game->dirX
+            * moveSpeed)] == '0')
+    {
+        game->posX += game->dirX * moveSpeed;
+    }
+}
+
+void	key_w(mlx_key_data_t keydata, void *param)
+{
+    t_game	*game;
+    double	moveSpeed;
+
+    game = (t_game *)param;
+    moveSpeed = MOVE_SPEED;
     if (keydata.key == MLX_KEY_W)
     {
-        if (game->worldMap[(int)(game->posY + game->dirY * moveSpeed + PLAYER_RADIUS)][(int)(game->posX)] == '0' &&
-            game->worldMap[(int)(game->posY + game->dirY * moveSpeed - PLAYER_RADIUS)][(int)(game->posX)] == '0' &&
-            game->worldMap[(int)(game->posY + game->dirY * moveSpeed)][(int)(game->posX + PLAYER_RADIUS)] == '0' &&
-            game->worldMap[(int)(game->posY + game->dirY * moveSpeed)][(int)(game->posX - PLAYER_RADIUS)] == '0')
-        {
-            game->posY += game->dirY * moveSpeed;
-        }
-        if (game->worldMap[(int)(game->posY)][(int)(game->posX + game->dirX * moveSpeed + PLAYER_RADIUS)] == '0' &&
-            game->worldMap[(int)(game->posY)][(int)(game->posX + game->dirX * moveSpeed - PLAYER_RADIUS)] == '0' &&
-            game->worldMap[(int)(game->posY + PLAYER_RADIUS)][(int)(game->posX + game->dirX * moveSpeed)] == '0' &&
-            game->worldMap[(int)(game->posY - PLAYER_RADIUS)][(int)(game->posX + game->dirX * moveSpeed)] == '0')
-        {
-            game->posX += game->dirX * moveSpeed;
-        }
+        move_forward(game, moveSpeed);
+        move_right(game, moveSpeed);
     }
+}
 
+void	move_backward(t_game *game, double moveSpeed)
+{
+    if (game->worldMap[(int)(game->posY - game->dirY * moveSpeed
+            + PLAYER_RADIUS)][(int)(game->posX)] == '0'
+        && game->worldMap[(int)(game->posY - game->dirY * moveSpeed
+            - PLAYER_RADIUS)][(int)(game->posX)] == '0'
+        && game->worldMap[(int)(game->posY - game->dirY
+            * moveSpeed)][(int)(game->posX + PLAYER_RADIUS)] == '0'
+        && game->worldMap[(int)(game->posY - game->dirY
+            * moveSpeed)][(int)(game->posX - PLAYER_RADIUS)] == '0')
+    {
+        game->posY -= game->dirY * moveSpeed;
+    }
+}
+
+void	move_left(t_game *game, double moveSpeed)
+{
+    if (game->worldMap[(int)(game->posY)][(int)(game->posX - game->dirX
+            * moveSpeed + PLAYER_RADIUS)] == '0'
+        && game->worldMap[(int)(game->posY)][(int)(game->posX - game->dirX
+            * moveSpeed - PLAYER_RADIUS)] == '0'
+        && game->worldMap[(int)(game->posY
+            + PLAYER_RADIUS)][(int)(game->posX - game->dirX
+            * moveSpeed)] == '0' && game->worldMap[(int)(game->posY
+            - PLAYER_RADIUS)][(int)(game->posX - game->dirX
+            * moveSpeed)] == '0')
+    {
+        game->posX -= game->dirX * moveSpeed;
+    }
+}
+
+void	key_s(mlx_key_data_t keydata, void *param)
+{
+    t_game	*game;
+    double	moveSpeed;
+
+    game = (t_game *)param;
+    moveSpeed = MOVE_SPEED;
+    if (keydata.key == MLX_KEY_S)
+    {
+        move_backward(game, moveSpeed);
+        move_left(game, moveSpeed);
+    }
 }
 
 void foward_and_back_mov(mlx_key_data_t keydata, void *param)
 {
     t_game *game = (t_game *)param;
-    double moveSpeed = MOVE_SPEED;
 
     key_w(keydata, game);
-    if (keydata.key == MLX_KEY_S)
-    {
-        if (game->worldMap[(int)(game->posY - game->dirY * moveSpeed + PLAYER_RADIUS)][(int)(game->posX)] == '0' &&
-            game->worldMap[(int)(game->posY - game->dirY * moveSpeed - PLAYER_RADIUS)][(int)(game->posX)] == '0' &&
-            game->worldMap[(int)(game->posY - game->dirY * moveSpeed)][(int)(game->posX + PLAYER_RADIUS)] == '0' &&
-            game->worldMap[(int)(game->posY - game->dirY * moveSpeed)][(int)(game->posX - PLAYER_RADIUS)] == '0')
-        {
-            game->posY -= game->dirY * moveSpeed;
-        }
-        if (game->worldMap[(int)(game->posY)][(int)(game->posX - game->dirX * moveSpeed + PLAYER_RADIUS)] == '0' &&
-            game->worldMap[(int)(game->posY)][(int)(game->posX - game->dirX * moveSpeed - PLAYER_RADIUS)] == '0' &&
-            game->worldMap[(int)(game->posY + PLAYER_RADIUS)][(int)(game->posX - game->dirX * moveSpeed)] == '0' &&
-            game->worldMap[(int)(game->posY - PLAYER_RADIUS)][(int)(game->posX - game->dirX * moveSpeed)] == '0')
-        {
-            game->posX -= game->dirX * moveSpeed;
-        }
-    }
+    key_s(keydata, game);
 }
 
 void key_a(mlx_key_data_t keydata, void *param)
