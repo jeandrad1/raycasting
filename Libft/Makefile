@@ -3,10 +3,10 @@
 #                                                         :::      ::::::::    #
 #    Makefile                                           :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: cagarci2 <cagarci2@student.42.fr>          +#+  +:+       +#+         #
+#    By: jeandrad <jeandrad@student.42malaga.com    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/03/22 12:45:34 by cagarci2          #+#    #+#              #
-#    Updated: 2024/10/09 16:18:05 by cagarci2         ###   ########.fr        #
+#    Updated: 2025/01/11 18:13:21 by jeandrad         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -41,7 +41,8 @@ SOURCES = ft_isalnum.c ft_isalpha.c ft_isascii.c ft_isdigit.c ft_isprint.c \
 		 ft_putlendl_fd.c ft_putnbr_fd.c ft_substr.c ft_strjoin.c ft_strtrim.c \
 		 ft_itoa.c ft_striteri.c ft_strmapi.c ft_split.c ft_strncpy.c ft_strndup.c\
 		 ft_lstnew.c ft_lstsize.c ft_lstlast.c ft_lstadd_back.c ft_lstadd_front.c \
-		 ft_lstdelone.c ft_lstclear.c ft_lstiter.c ft_lstmap.c ft_strcmp.c
+		 ft_lstdelone.c ft_lstclear.c ft_lstiter.c ft_lstmap.c ft_strcmp.c\
+		 get_next_line.c get_next_line_utils.c
 
 OBJ = $(SOURCES:.c=.o)
 

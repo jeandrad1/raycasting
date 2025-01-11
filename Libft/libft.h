@@ -6,7 +6,7 @@
 /*   By: jeandrad <jeandrad@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/02 12:35:37 by cagarci2          #+#    #+#             */
-/*   Updated: 2024/10/09 16:20:13 by jeandrad         ###   ########.fr       */
+/*   Updated: 2025/01/11 18:12:24 by jeandrad         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -71,5 +71,18 @@ char	*ft_strncpy(char *dest, const char *src, size_t n);
 char	*ft_strndup(const char *s, size_t n);
 char	*ft_realloc(char *ptr, int n);
 char	*ft_strcpy(char *s1, char *s2);
+
+# ifndef GET_NEXT_LINE_H
+#  define GET_NEXT_LINE_H
+#ifndef BUFFER_SIZE
+# define BUFFER_SIZE 32
+#endif
+char	*get_next_line(int fd);
+void	ft_free(char **str);
+size_t	count_len(char *str);
+char	*search_char(char *str, int c);
+char	*join_str(char *str1, char *str2);
+
+# endif
 
 #endif

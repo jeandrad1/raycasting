@@ -11,7 +11,7 @@ void load_walls(t_game *game)
 {
     xpm_t *xpm;
 
-    xpm = mlx_load_xpm42("textures/barrel.xpm42");
+    xpm = mlx_load_xpm42("textures/bluestone.xpm42");
     if (!xpm)
         error("texture not found", game);
     game->textures.north = &xpm->texture;
