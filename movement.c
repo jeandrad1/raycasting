@@ -6,7 +6,7 @@
 /*   By: jeandrad <jeandrad@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/09 12:27:00 by jeandrad          #+#    #+#             */
-/*   Updated: 2025/01/11 17:51:46 by jeandrad         ###   ########.fr       */
+/*   Updated: 2025/01/11 17:56:34 by jeandrad         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,7 +24,7 @@ void escape_key(mlx_key_data_t keydata, void *param)
     }
 }
 
-void foward_and_back_mov(mlx_key_data_t keydata, void *param)
+void key_w(mlx_key_data_t keydata, void *param)
 {
     t_game *game = (t_game *)param;
     double moveSpeed = MOVE_SPEED;
@@ -46,6 +46,15 @@ void foward_and_back_mov(mlx_key_data_t keydata, void *param)
             game->posX += game->dirX * moveSpeed;
         }
     }
+
+}
+
+void foward_and_back_mov(mlx_key_data_t keydata, void *param)
+{
+    t_game *game = (t_game *)param;
+    double moveSpeed = MOVE_SPEED;
+
+    key_w(keydata, game);
     if (keydata.key == MLX_KEY_S)
     {
         if (game->worldMap[(int)(game->posY - game->dirY * moveSpeed + PLAYER_RADIUS)][(int)(game->posX)] == '0' &&
@@ -65,10 +74,10 @@ void foward_and_back_mov(mlx_key_data_t keydata, void *param)
     }
 }
 
-void side_mov(mlx_key_data_t keydata, void *param)
+void key_a(mlx_key_data_t keydata, void *param)
 {
-    t_game *game = (t_game *)param;
     double moveSpeed = MOVE_SPEED;
+    t_game *game = (t_game *)param;
 
     if (keydata.key == MLX_KEY_A)
     {
@@ -87,6 +96,15 @@ void side_mov(mlx_key_data_t keydata, void *param)
             game->posY -= game->planeY * moveSpeed;
         }
     }
+
+}
+
+void side_mov(mlx_key_data_t keydata, void *param)
+{
+    t_game *game = (t_game *)param;
+    double moveSpeed = MOVE_SPEED;
+
+    key_a(keydata, game);
     if (keydata.key == MLX_KEY_D)
     {
         if (game->worldMap[(int)(game->posY)][(int)(game->posX + game->planeX * moveSpeed + PLAYER_RADIUS)] == '0' &&
