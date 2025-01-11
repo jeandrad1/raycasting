@@ -6,7 +6,7 @@
 /*   By: jeandrad <jeandrad@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/09 12:27:00 by jeandrad          #+#    #+#             */
-/*   Updated: 2024/12/13 19:41:48 by jeandrad         ###   ########.fr       */
+/*   Updated: 2025/01/11 14:57:17 by jeandrad         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -73,7 +73,7 @@ void turn_mov(mlx_key_data_t keydata, void *param)
 
     double rotSpeed = ROT_SPEED;
     
-    if (keydata.key == MLX_KEY_RIGHT)
+    if (keydata.key == MLX_KEY_LEFT)
     {
         double oldDirX = game->dirX;
         game->dirX = game->dirX * cos(-rotSpeed) - game->dirY * sin(-rotSpeed);
@@ -82,7 +82,7 @@ void turn_mov(mlx_key_data_t keydata, void *param)
         game->planeX = game->planeX * cos(-rotSpeed) - game->planeY * sin(-rotSpeed);
         game->planeY = oldPlaneX * sin(-rotSpeed) + game->planeY * cos(-rotSpeed);
     }
-    if (keydata.key == MLX_KEY_LEFT)
+    if (keydata.key == MLX_KEY_RIGHT)
     {
         double oldDirX = game->dirX;
         game->dirX = game->dirX * cos(rotSpeed) - game->dirY * sin(rotSpeed);
