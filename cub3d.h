@@ -79,6 +79,13 @@ typedef struct lines
 	uint32_t color;
 } t_lines;
 
+typedef struct s_old
+{
+    double dirX;
+    double planeX;
+} t_old;
+
+
 //funciones
 void clear_image(mlx_image_t *image, uint32_t color);
 void draw_line(t_game *game, int x, int start, int end, uint32_t color);
