@@ -95,6 +95,8 @@ char **initialize_map(char *mapData[], int mapHeight, t_game *game);
 void free_map(char **map, int mapHeight);
 void load_walls(t_game *game);
 void move_forward(t_game *game, double moveSpeed);
+void turn_mov(mlx_key_data_t keydata, void *param);
+
 
 
 

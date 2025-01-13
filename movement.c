@@ -6,7 +6,7 @@
 /*   By: jeandrad <jeandrad@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/09 12:27:00 by jeandrad          #+#    #+#             */
-/*   Updated: 2025/01/13 17:56:59 by jeandrad         ###   ########.fr       */
+/*   Updated: 2025/01/13 17:59:37 by jeandrad         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -151,35 +151,6 @@ void	side_mov(mlx_key_data_t keydata, void *param)
         move_right_planeX(game, moveSpeed);
         move_right_planeY(game, moveSpeed);
     }
-}
-
-void turn_left(t_game *game, double rotSpeed)
-{
-    t_old old = {game->dirX, game->planeX};
-    game->dirX = game->dirX * cos(-rotSpeed) - game->dirY * sin(-rotSpeed);
-    game->dirY = old.dirX * sin(-rotSpeed) + game->dirY * cos(-rotSpeed);
-    game->planeX = game->planeX * cos(-rotSpeed) - game->planeY * sin(-rotSpeed);
-    game->planeY = old.planeX * sin(-rotSpeed) + game->planeY * cos(-rotSpeed);
-}
-
-void turn_right(t_game *game, double rotSpeed)
-{
-    t_old old = {game->dirX, game->planeX};
-    game->dirX = game->dirX * cos(rotSpeed) - game->dirY * sin(rotSpeed);
-    game->dirY = old.dirX * sin(rotSpeed) + game->dirY * cos(rotSpeed);
-    game->planeX = game->planeX * cos(rotSpeed) - game->planeY * sin(rotSpeed);
-    game->planeY = old.planeX * sin(rotSpeed) + game->planeY * cos(rotSpeed);
-}
-
-void turn_mov(mlx_key_data_t keydata, void *param)
-{
-    t_game *game = (t_game *)param;
-    double rotSpeed = ROT_SPEED;
-
-    if (keydata.key == MLX_KEY_LEFT)
-        turn_left(game, rotSpeed);
-    if (keydata.key == MLX_KEY_RIGHT)
-        turn_right(game, rotSpeed);
 }
 
 // Función para mover al jugador
