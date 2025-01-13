@@ -98,6 +98,7 @@ void move_forward(t_game *game, double moveSpeed);
 void turn_mov(mlx_key_data_t keydata, void *param);
 void	key_a(mlx_key_data_t keydata, void *param);
 void	side_mov(mlx_key_data_t keydata, void *param);
+void	draw_wall_with_texture(t_game *game, t_ray *ray, int x, t_lines *lines);
 
 
 
