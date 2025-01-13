@@ -6,7 +6,7 @@
 /*   By: jeandrad <jeandrad@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/09 12:23:11 by jeandrad          #+#    #+#             */
-/*   Updated: 2025/01/11 18:19:24 by jeandrad         ###   ########.fr       */
+/*   Updated: 2025/01/13 17:49:23 by jeandrad         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,7 +24,7 @@ char **read_map_from_file(const char *filename, int *mapHeight)
     char **map = NULL;
     char *line;
     int height = 0;
-    int capacity = 10; // Capacidad inicial para 10 líneas
+    int capacity = 100; // Capacidad inicial para 100 líneas
 
     map = malloc(capacity * sizeof(char *));
     if (!map)
@@ -58,8 +58,14 @@ char **read_map_from_file(const char *filename, int *mapHeight)
 
 void	free_map(char **map, int mapHeight)
 {
-	for (int i = 0; i < mapHeight; i++)
+    int i;
+
+    i = 0;
+	while (i < mapHeight)
+    {
 		free(map[i]);
+        i++;
+    }
 	free(map);
 }
 
