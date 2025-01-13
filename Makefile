@@ -23,7 +23,7 @@ MLX_PATH = ./MLX42
 MLX = $(MLX_PATH)/libmlx42.a
 
 # Source files for mandatory
-FILES = drawing.c cub3d.c movement.c render.c textures.c mov_forward.c turn_mov.c
+FILES = drawing.c cub3d.c movement.c render.c textures.c mov_forward.c turn_mov.c side_mov.c key_a.c
 
 # Object files
 OBJS = $(FILES:.c=.o)
